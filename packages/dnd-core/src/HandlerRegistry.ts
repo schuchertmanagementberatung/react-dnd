@@ -56,6 +56,7 @@ export default class HandlerRegistry implements IHandlerRegistry {
 	constructor(private store: Store<IState>) {}
 
 	public addSource(type: string, source: IDragSource) {
+    console.log('addSource')
 		validateType(type)
 		validateSourceContract(source)
 
@@ -65,6 +66,7 @@ export default class HandlerRegistry implements IHandlerRegistry {
 	}
 
 	public addTarget(type: string, target: IDropTarget) {
+    console.log('addTarget')
 		validateType(type, true)
 		validateTargetContract(target)
 
@@ -119,6 +121,7 @@ export default class HandlerRegistry implements IHandlerRegistry {
 	}
 
 	public removeSource(sourceId: string) {
+    console.log('removeSource')
 		invariant(this.getSource(sourceId), 'Expected an existing source.')
 		this.store.dispatch(removeSource(sourceId))
 
@@ -129,8 +132,9 @@ export default class HandlerRegistry implements IHandlerRegistry {
 	}
 
 	public removeTarget(targetId: string) {
+    console.log('removeTarget')
 		invariant(this.getTarget(targetId), 'Expected an existing target.')
-		this.store.dispatch(removeTarget(targetId))
+    this.store.dispatch(removeTarget(targetId))
 
 		asap(() => {
 			delete this.dropTargets[targetId]

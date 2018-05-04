@@ -97,24 +97,24 @@ export default function decorateHandler<P>({
 			this.disposable = new SerialDisposable()
 			this.currentType = undefined
 			this.receiveProps(this.props)
-			this.handleChange()
+			//this.handleChange()
 		}
 
 		public componentWillReceiveProps(nextProps: any) {
 			if (!arePropsEqual(nextProps, this.props)) {
-				this.receiveProps(nextProps)
-				this.handleChange()
+        this.receiveProps(nextProps)
+        this.handleChange()
 			}
 		}
 
 		public componentWillUnmount() {
-			this.dispose()
+      this.dispose()
 			this.isCurrentlyMounted = false
 		}
 
 		public receiveProps(props: any) {
-			this.handler.receiveProps(props)
-			this.receiveType(getType(props))
+      this.handler.receiveProps(props)
+      this.receiveType(getType(props))
 		}
 
 		public receiveType(type: any) {
@@ -124,28 +124,32 @@ export default function decorateHandler<P>({
 
 			this.currentType = type
 
-			const { handlerId, unregister } = registerHandler(
-				type,
-				this.handler,
-				this.manager,
-			)
+        const { handlerId, unregister } = registerHandler(
+          type,
+          this.handler,
+          this.manager,
+        )
 
-			this.handlerId = handlerId
-			this.handlerMonitor.receiveHandlerId(handlerId)
-			this.handlerConnector.receiveHandlerId(handlerId)
+        this.handlerId = handlerId
+        this.handlerMonitor.receiveHandlerId(handlerId)
+        this.handlerConnector.receiveHandlerId(handlerId)
 
-			const globalMonitor = this.manager.getMonitor()
-			const unsubscribe = globalMonitor.subscribeToStateChange(
-				this.handleChange,
-				{ handlerIds: [handlerId] },
-			)
+        const globalMonitor = this.manager.getMonitor()
+        setTimeout(() => {
+          const unsubscribe = globalMonitor.subscribeToStateChange(
+            this.handleChange,
+            { handlerIds: [handlerId] },
+          )
 
-			this.disposable.setDisposable(
-				new CompositeDisposable(
-					new Disposable(unsubscribe),
-					new Disposable(unregister),
-				),
-			)
+          this.disposable.setDisposable(
+            new CompositeDisposable(
+              new Disposable(unsubscribe),
+              new Disposable(unregister),
+            ),
+          )
+        }, 10);
+        /*
+        */
 		}
 
 		public handleChange() {

@@ -51,7 +51,11 @@ export default class DragDropMonitor implements IDragDropMonitor {
 			}
 		}
 
-		return this.store.subscribe(handleChange)
+    console.log('subscribe')
+		return () => {
+      console.log('unsubscribe');
+      this.store.subscribe(handleChange)
+    }
 	}
 
 	public subscribeToOffsetChange(listener: Listener): Unsubscribe {
