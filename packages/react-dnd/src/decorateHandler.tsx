@@ -124,32 +124,30 @@ export default function decorateHandler<P>({
 
 			this.currentType = type
 
-        const { handlerId, unregister } = registerHandler(
-          type,
-          this.handler,
-          this.manager,
+      const { handlerId, unregister } = registerHandler(
+        type,
+        this.handler,
+        this.manager,
+      )
+
+      this.handlerId = handlerId
+      this.handlerMonitor.receiveHandlerId(handlerId)
+      this.handlerConnector.receiveHandlerId(handlerId)
+
+      const globalMonitor = this.manager.getMonitor()
+      setTimeout(() => {
+        const unsubscribe = globalMonitor.subscribeToStateChange(
+          this.handleChange,
+          { handlerIds: [handlerId] },
         )
 
-        this.handlerId = handlerId
-        this.handlerMonitor.receiveHandlerId(handlerId)
-        this.handlerConnector.receiveHandlerId(handlerId)
-
-        const globalMonitor = this.manager.getMonitor()
-        setTimeout(() => {
-          const unsubscribe = globalMonitor.subscribeToStateChange(
-            this.handleChange,
-            { handlerIds: [handlerId] },
-          )
-
-          this.disposable.setDisposable(
-            new CompositeDisposable(
-              new Disposable(unsubscribe),
-              new Disposable(unregister),
-            ),
-          )
-        }, 10);
-        /*
-        */
+        this.disposable.setDisposable(
+          new CompositeDisposable(
+            new Disposable(unsubscribe),
+            new Disposable(unregister),
+          ),
+        )
+      }, 10);
 		}
 
 		public handleChange() {
