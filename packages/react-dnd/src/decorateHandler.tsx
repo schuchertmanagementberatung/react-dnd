@@ -34,7 +34,7 @@ export default function decorateHandler<P>({
 	const displayName =
 		DecoratedComponent.displayName || DecoratedComponent.name || 'Component'
 
-	class DragDropContainer extends React.Component<P>
+	class DragDropContainer extends (DecoratedComponent as React.ComponentClass<P>)
 		implements IDndComponent<P, any> {
 		public static DecoratedComponent = DecoratedComponent
 		public static displayName = `${containerDisplayName}(${displayName})`
