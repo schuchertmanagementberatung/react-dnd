@@ -72,7 +72,9 @@ describe.only('DragDropMonitor', () => {
 			const sourceId = registry.addSource(Types.FOO, source)
 
 			monitor.subscribeToStateChange(done)
-			backend.simulateBeginDrag([sourceId])
+      setTimeout(() => {
+			  backend.simulateBeginDrag([sourceId])
+      }, 10)
 		})
 
 		it('raises global change event on beginDrag() even if a subscriber causes other changes', done => {
@@ -89,10 +91,12 @@ describe.only('DragDropMonitor', () => {
 			})
 
 			monitor.subscribeToStateChange(done)
-			backend.simulateBeginDrag([sourceId])
+      setTimeout(() => {
+			  backend.simulateBeginDrag([sourceId])
+      }, 10)
 		})
 
-		it('raises local change event on sources and targets in beginDrag()', () => {
+		it('raises local change event on sources and targets in beginDrag()', (done) => {
 			const sourceA = new NormalSource()
 			const sourceAId = registry.addSource(Types.FOO, sourceA)
 			const sourceB = new NormalSource()
@@ -140,22 +144,23 @@ describe.only('DragDropMonitor', () => {
 				},
 			)
 
-			backend.simulateBeginDrag([sourceAId])
-			expect(raisedChangeForSourceA).toEqual(true)
-			expect(raisedChangeForSourceB).toEqual(true)
-			expect(raisedChangeForSourceAAndB).toEqual(true)
-			expect(raisedChangeForTargetA).toEqual(true)
+      setTimeout(() => {
+        backend.simulateBeginDrag([sourceAId])
+        expect(raisedChangeForSourceA).toEqual(true)
+        expect(raisedChangeForSourceB).toEqual(true)
+        expect(raisedChangeForSourceAAndB).toEqual(true)
+        expect(raisedChangeForTargetA).toEqual(true)
+        done()
+      }, 10)
 		})
 
-		it('raises local change event on sources and targets in endDrag()', () => {
+		it('raises local change event on sources and targets in endDrag()', (done) => {
 			const sourceA = new NormalSource()
 			const sourceAId = registry.addSource(Types.FOO, sourceA)
 			const sourceB = new NormalSource()
 			const sourceBId = registry.addSource(Types.FOO, sourceB)
 			const targetA = new NormalTarget()
 			const targetAId = registry.addTarget(Types.FOO, targetA)
-
-			backend.simulateBeginDrag([sourceAId])
 
 			let raisedChangeForSourceA = false
 			monitor.subscribeToStateChange(
@@ -197,23 +202,24 @@ describe.only('DragDropMonitor', () => {
 				},
 			)
 
+      setTimeout(() => {
+			backend.simulateBeginDrag([sourceAId])
 			backend.simulateEndDrag()
 			expect(raisedChangeForSourceA).toEqual(true)
 			expect(raisedChangeForSourceB).toEqual(true)
 			expect(raisedChangeForSourceAAndB).toEqual(true)
 			expect(raisedChangeForTargetA).toEqual(true)
+      done()
+      }, 10)
 		})
 
-		it('raises local change event on sources and targets in drop()', () => {
+		it('raises local change event on sources and targets in drop()', (done) => {
 			const sourceA = new NormalSource()
 			const sourceAId = registry.addSource(Types.FOO, sourceA)
 			const sourceB = new NormalSource()
 			const sourceBId = registry.addSource(Types.FOO, sourceB)
 			const targetA = new NormalTarget()
 			const targetAId = registry.addTarget(Types.FOO, targetA)
-
-			backend.simulateBeginDrag([sourceAId])
-			backend.simulateHover([targetAId])
 
 			let raisedChangeForSourceA = false
 			monitor.subscribeToStateChange(
@@ -255,14 +261,19 @@ describe.only('DragDropMonitor', () => {
 				},
 			)
 
-			backend.simulateDrop()
-			expect(raisedChangeForSourceA).toEqual(true)
-			expect(raisedChangeForSourceB).toEqual(true)
-			expect(raisedChangeForSourceAAndB).toEqual(true)
-			expect(raisedChangeForTargetA).toEqual(true)
+      setTimeout(() => {
+        backend.simulateBeginDrag([sourceAId])
+        backend.simulateHover([targetAId])
+        backend.simulateDrop()
+        expect(raisedChangeForSourceA).toEqual(true)
+        expect(raisedChangeForSourceB).toEqual(true)
+        expect(raisedChangeForSourceAAndB).toEqual(true)
+        expect(raisedChangeForTargetA).toEqual(true)
+        done()
+      }, 10)
 		})
 
-		it('raises local change event only on previous and next targets in hover()', () => {
+		it('raises local change event only on previous and next targets in hover()', (done) => {
 			const sourceA = new NormalSource()
 			const sourceAId = registry.addSource(Types.FOO, sourceA)
 			const sourceB = new NormalSource()
@@ -278,8 +289,8 @@ describe.only('DragDropMonitor', () => {
 			const targetE = new NormalTarget()
 			const targetEId = registry.addTarget(Types.FOO, targetE)
 
-			backend.simulateBeginDrag([sourceAId])
-			backend.simulateHover([targetAId, targetBId])
+      backend.simulateBeginDrag([sourceAId])
+      backend.simulateHover([targetAId, targetBId])
 
 			let raisedChangeForSourceA = false
 			monitor.subscribeToStateChange(
@@ -371,19 +382,22 @@ describe.only('DragDropMonitor', () => {
 				},
 			)
 
-			backend.simulateHover([targetDId, targetEId])
-			expect(raisedChangeForSourceA).toEqual(false)
-			expect(raisedChangeForSourceB).toEqual(false)
-			expect(raisedChangeForTargetA).toEqual(true)
-			expect(raisedChangeForTargetB).toEqual(true)
-			expect(raisedChangeForTargetC).toEqual(false)
-			expect(raisedChangeForTargetD).toEqual(true)
-			expect(raisedChangeForTargetE).toEqual(true)
-			expect(raisedChangeForSourceBAndTargetC).toEqual(false)
-			expect(raisedChangeForSourceBAndTargetE).toEqual(true)
+      setTimeout(() => {
+        backend.simulateHover([targetDId, targetEId])
+        expect(raisedChangeForSourceA).toEqual(false)
+        expect(raisedChangeForSourceB).toEqual(false)
+        expect(raisedChangeForTargetA).toEqual(true)
+        expect(raisedChangeForTargetB).toEqual(true)
+        expect(raisedChangeForTargetC).toEqual(false)
+        expect(raisedChangeForTargetD).toEqual(true)
+        expect(raisedChangeForTargetE).toEqual(true)
+        expect(raisedChangeForSourceBAndTargetC).toEqual(false)
+        expect(raisedChangeForSourceBAndTargetE).toEqual(true)
+        done()
+      }, 10)
 		})
 
-		it('raises local change event when target stops being or becomes innermost in hover()', () => {
+		it('raises local change event when target stops being or becomes innermost in hover()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const targetA = new NormalTarget()
@@ -395,8 +409,8 @@ describe.only('DragDropMonitor', () => {
 			const targetD = new NormalTarget()
 			const targetDId = registry.addTarget(Types.FOO, targetD)
 
-			backend.simulateBeginDrag([sourceId])
-			backend.simulateHover([targetAId, targetBId, targetCId, targetDId])
+      backend.simulateBeginDrag([sourceId])
+      backend.simulateHover([targetAId, targetBId, targetCId, targetDId])
 
 			let raisedChangeForTargetA = false
 			monitor.subscribeToStateChange(
@@ -438,41 +452,44 @@ describe.only('DragDropMonitor', () => {
 				},
 			)
 
-			backend.simulateHover([targetAId, targetBId, targetCId])
-			expect(raisedChangeForTargetA).toEqual(false)
-			expect(raisedChangeForTargetB).toEqual(false)
-			expect(raisedChangeForTargetC).toEqual(true)
-			expect(raisedChangeForTargetD).toEqual(true)
+      setTimeout(() => {
+        backend.simulateHover([targetAId, targetBId, targetCId])
+        expect(raisedChangeForTargetA).toEqual(false)
+        expect(raisedChangeForTargetB).toEqual(false)
+        expect(raisedChangeForTargetC).toEqual(true)
+        expect(raisedChangeForTargetD).toEqual(true)
 
-			raisedChangeForTargetA = false
-			raisedChangeForTargetB = false
-			raisedChangeForTargetC = false
-			raisedChangeForTargetD = false
-			backend.simulateHover([targetAId, targetBId, targetCId, targetDId])
-			expect(raisedChangeForTargetA).toEqual(false)
-			expect(raisedChangeForTargetB).toEqual(false)
-			expect(raisedChangeForTargetC).toEqual(true)
-			expect(raisedChangeForTargetD).toEqual(true)
+        raisedChangeForTargetA = false
+        raisedChangeForTargetB = false
+        raisedChangeForTargetC = false
+        raisedChangeForTargetD = false
+        backend.simulateHover([targetAId, targetBId, targetCId, targetDId])
+        expect(raisedChangeForTargetA).toEqual(false)
+        expect(raisedChangeForTargetB).toEqual(false)
+        expect(raisedChangeForTargetC).toEqual(true)
+        expect(raisedChangeForTargetD).toEqual(true)
 
-			raisedChangeForTargetA = false
-			raisedChangeForTargetB = false
-			raisedChangeForTargetC = false
-			raisedChangeForTargetD = false
-			backend.simulateHover([targetAId])
-			expect(raisedChangeForTargetA).toEqual(true)
-			expect(raisedChangeForTargetB).toEqual(true)
-			expect(raisedChangeForTargetC).toEqual(true)
-			expect(raisedChangeForTargetD).toEqual(true)
+        raisedChangeForTargetA = false
+        raisedChangeForTargetB = false
+        raisedChangeForTargetC = false
+        raisedChangeForTargetD = false
+        backend.simulateHover([targetAId])
+        expect(raisedChangeForTargetA).toEqual(true)
+        expect(raisedChangeForTargetB).toEqual(true)
+        expect(raisedChangeForTargetC).toEqual(true)
+        expect(raisedChangeForTargetD).toEqual(true)
 
-			raisedChangeForTargetA = false
-			raisedChangeForTargetB = false
-			raisedChangeForTargetC = false
-			raisedChangeForTargetD = false
-			backend.simulateHover([targetAId, targetBId])
-			expect(raisedChangeForTargetA).toEqual(true)
-			expect(raisedChangeForTargetB).toEqual(true)
-			expect(raisedChangeForTargetC).toEqual(false)
-			expect(raisedChangeForTargetD).toEqual(false)
+        raisedChangeForTargetA = false
+        raisedChangeForTargetB = false
+        raisedChangeForTargetC = false
+        raisedChangeForTargetD = false
+        backend.simulateHover([targetAId, targetBId])
+        expect(raisedChangeForTargetA).toEqual(true)
+        expect(raisedChangeForTargetB).toEqual(true)
+        expect(raisedChangeForTargetC).toEqual(false)
+        expect(raisedChangeForTargetD).toEqual(false)
+        done()
+      }, 10)
 		})
 
 		it('raises global change event on endDrag()', done => {
@@ -480,10 +497,12 @@ describe.only('DragDropMonitor', () => {
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()
 			registry.addTarget(Types.FOO, target)
-
-			backend.simulateBeginDrag([sourceId])
 			monitor.subscribeToStateChange(done)
-			backend.simulateEndDrag()
+
+      setTimeout(() => {
+        backend.simulateBeginDrag([sourceId])
+        backend.simulateEndDrag()
+      }, 10)
 		})
 
 		it('raises global change event on drop()', done => {
@@ -492,14 +511,16 @@ describe.only('DragDropMonitor', () => {
 			const target = new NormalTarget()
 			const targetId = registry.addTarget(Types.FOO, target)
 
-			backend.simulateBeginDrag([sourceId])
-			backend.simulateHover([targetId])
 
 			monitor.subscribeToStateChange(done)
-			backend.simulateDrop()
+      setTimeout(() => {
+        backend.simulateBeginDrag([sourceId])
+        backend.simulateHover([targetId])
+        backend.simulateDrop()
+      }, 10)
 		})
 
-		it('does not raise global change event if hover targets have not changed', () => {
+		it('does not raise global change event if hover targets have not changed', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const targetA = new NormalTarget({ a: 123 })
@@ -512,34 +533,37 @@ describe.only('DragDropMonitor', () => {
 				raisedChange = true
 			})
 
-			backend.simulateBeginDrag([sourceId])
-			expect(raisedChange).toEqual(true)
-			raisedChange = false
+      setTimeout(() => {
+        backend.simulateBeginDrag([sourceId])
+        expect(raisedChange).toEqual(true)
+        raisedChange = false
 
-			backend.simulateHover([targetAId])
-			expect(raisedChange).toEqual(true)
-			raisedChange = false
+        backend.simulateHover([targetAId])
+        expect(raisedChange).toEqual(true)
+        raisedChange = false
 
-			backend.simulateHover([targetBId])
-			expect(raisedChange).toEqual(true)
-			raisedChange = false
+        backend.simulateHover([targetBId])
+        expect(raisedChange).toEqual(true)
+        raisedChange = false
 
-			backend.simulateHover([targetBId])
-			expect(raisedChange).toEqual(false)
+        backend.simulateHover([targetBId])
+        expect(raisedChange).toEqual(false)
 
-			backend.simulateHover([targetBId, targetAId])
-			expect(raisedChange).toEqual(true)
-			raisedChange = false
+        backend.simulateHover([targetBId, targetAId])
+        expect(raisedChange).toEqual(true)
+        raisedChange = false
 
-			backend.simulateHover([targetBId, targetAId])
-			expect(raisedChange).toEqual(false)
+        backend.simulateHover([targetBId, targetAId])
+        expect(raisedChange).toEqual(false)
 
-			backend.simulateHover([targetAId, targetBId])
-			expect(raisedChange).toEqual(true)
-			raisedChange = false
+        backend.simulateHover([targetAId, targetBId])
+        expect(raisedChange).toEqual(true)
+        raisedChange = false
 
-			backend.simulateHover([targetAId, targetBId])
-			expect(raisedChange).toEqual(false)
+        backend.simulateHover([targetAId, targetBId])
+        expect(raisedChange).toEqual(false)
+        done()
+      }, 10)
 		})
 	})
 

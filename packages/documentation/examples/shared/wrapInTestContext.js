@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import TestBackend from 'react-dnd-test-backend'
-import { DragDropContext } from 'react-dnd'
+import TestBackend from '@factro/react-dnd-test-backend'
+import { DragDropContext } from '@factro/react-dnd'
 
 export default function wrapInTestContext(DecoratedComponent) {
 	class TestStub extends Component {

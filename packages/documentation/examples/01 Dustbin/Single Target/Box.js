@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DragSource } from 'react-dnd'
+import { DragSource } from '@factro/react-dnd'
 import ItemTypes from './ItemTypes'
 
 const style = {

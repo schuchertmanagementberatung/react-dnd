@@ -30,7 +30,7 @@ describe('Box', () => {
 		expect(div.style.opacity).toEqual('0.4')
 	})
 
-	it('can be tested with the testing backend', () => {
+	it('can be tested with the testing backend', done => {
 		// Render with the testing backend
 		const BoxContext = wrapInTestContext(Box)
 		const root = TestUtils.renderIntoDocument(<BoxContext name="test" />)
@@ -42,12 +42,15 @@ describe('Box', () => {
 		let div = TestUtils.findRenderedDOMComponentWithTag(root, 'div')
 		expect(div.style.opacity).toEqual('1')
 
-		// Find the drag source ID and use it to simulate the dragging state
-		const box = TestUtils.findRenderedComponentWithType(root, Box)
-		backend.simulateBeginDrag([box.getHandlerId()])
+		setTimeout(() => {
+			// Find the drag source ID and use it to simulate the dragging state
+			const box = TestUtils.findRenderedComponentWithType(root, Box)
+			backend.simulateBeginDrag([box.getHandlerId()])
 
-		// Verify that the div changed its opacity
-		div = TestUtils.findRenderedDOMComponentWithTag(root, 'div')
-		expect(div.style.opacity).toEqual('0.4')
+			// Verify that the div changed its opacity
+			div = TestUtils.findRenderedDOMComponentWithTag(root, 'div')
+			expect(div.style.opacity).toEqual('0.4')
+			done()
+		}, 10)
 	})
 })
