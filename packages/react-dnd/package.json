@@ -1,5 +1,5 @@
 {
-	"name": "factro/react-dnd",
+	"name": "@factro/react-dnd",
 	"version": "3.0.0",
 	"description": "Drag and Drop for React",
 	"main": "lib/index.js",

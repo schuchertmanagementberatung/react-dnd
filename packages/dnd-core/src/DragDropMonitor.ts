@@ -16,6 +16,9 @@ import {
 	IHandlerRegistry,
 } from './interfaces'
 
+const subscribeCallbacks: Array<() => void> = [];
+const unsubscribeCallbacks: Array<() => void> = [];
+
 export default class DragDropMonitor implements IDragDropMonitor {
 	constructor(
 		private store: Store<IState>,
@@ -51,10 +54,40 @@ export default class DragDropMonitor implements IDragDropMonitor {
 			}
 		}
 
-    console.log('subscribe')
+    if (subscribeCallbacks.length === 0) {
+      setTimeout(() => {
+        for (const callback of subscribeCallbacks) {
+          if (callback !== undefined) {
+            callback();
+          }
+        }
+        subscribeCallbacks = [];
+      }, 10);
+    }
+
+    let handler: () => void;
+    const handlerIndex = subscribeCallbacks.length;
+    subscribeCallbacks.push(() => {
+      handler = this.store.subscribe(handleChange);
+    });
+
 		return () => {
-      console.log('unsubscribe');
-      this.store.subscribe(handleChange)
+      if (handler === undefined) {
+        // the subscription should be canceld before it even began
+        delete subscribeCallbacks[handlerIndex];
+        return;
+      }
+
+      if (unsubscribeCallbacks.length === 0) {
+        setTimeout(() => {
+          for (const callback of unsubscribeCallbacks) {
+            callback();
+          }
+          unsubscribeCallbacks = [];
+        }, 10);
+      }
+
+      unsubscribeCallbacks.push(handler);
     }
 	}
 

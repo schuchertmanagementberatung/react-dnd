@@ -97,7 +97,7 @@ export default function decorateHandler<P>({
 			this.disposable = new SerialDisposable()
 			this.currentType = undefined
 			this.receiveProps(this.props)
-			//this.handleChange()
+			// this.handleChange()
 		}
 
 		public componentWillReceiveProps(nextProps: any) {
@@ -135,19 +135,17 @@ export default function decorateHandler<P>({
       this.handlerConnector.receiveHandlerId(handlerId)
 
       const globalMonitor = this.manager.getMonitor()
-      setTimeout(() => {
-        const unsubscribe = globalMonitor.subscribeToStateChange(
-          this.handleChange,
-          { handlerIds: [handlerId] },
-        )
+      const unsubscribe = globalMonitor.subscribeToStateChange(
+        this.handleChange,
+        { handlerIds: [handlerId] },
+      )
 
-        this.disposable.setDisposable(
-          new CompositeDisposable(
-            new Disposable(unsubscribe),
-            new Disposable(unregister),
-          ),
-        )
-      }, 10);
+      this.disposable.setDisposable(
+        new CompositeDisposable(
+          new Disposable(unsubscribe),
+          new Disposable(unregister),
+        ),
+      )
 		}
 
 		public handleChange() {
