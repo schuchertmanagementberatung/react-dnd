@@ -16,8 +16,8 @@ import {
 	IHandlerRegistry,
 } from './interfaces'
 
-const subscribeCallbacks: Array<() => void> = [];
-const unsubscribeCallbacks: Array<() => void> = [];
+let subscribeCallbacks: Array<() => void> = [];
+let unsubscribeCallbacks: Array<() => void> = [];
 
 export default class DragDropMonitor implements IDragDropMonitor {
 	constructor(
