@@ -73,7 +73,8 @@ export default class DragDropMonitor implements IDragDropMonitor {
 
 		return () => {
       if (handler === undefined) {
-        // the subscription should be canceld before it even began
+        // unsubscribe was called before the defered subcsribtion was executed,
+        // therefore cancel the subscription execution: it's no longer needed.
         delete subscribeCallbacks[handlerIndex];
         return;
       }
