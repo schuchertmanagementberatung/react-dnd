@@ -130,7 +130,7 @@ export default class HandlerRegistry implements IHandlerRegistry {
 
 	public removeTarget(targetId: string) {
 		invariant(this.getTarget(targetId), 'Expected an existing target.')
-    this.store.dispatch(removeTarget(targetId))
+		this.store.dispatch(removeTarget(targetId))
 
 		asap(() => {
 			delete this.dropTargets[targetId]
