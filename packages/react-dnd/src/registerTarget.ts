@@ -1,4 +1,4 @@
-import { IDragDropManager, IDropTarget, Unsubscribe } from 'dnd-core'
+import { IDragDropManager, IDropTarget, Unsubscribe } from '@factro/dnd-core'
 
 export default function registerTarget(
 	type: string,

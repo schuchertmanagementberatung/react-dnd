@@ -1,5 +1,5 @@
 import noop from 'lodash/noop'
-import { IDragDropManager, IDragDropActions, IBackend } from 'dnd-core'
+import { IDragDropManager, IDragDropActions, IBackend } from '@factro/dnd-core'
 
 export interface ITestBackend {
 	didCallSetup: boolean

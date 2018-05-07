@@ -1,4 +1,4 @@
-import createTestBackend, { ITestBackend } from 'react-dnd-test-backend'
+import createTestBackend, { ITestBackend } from '@factro/react-dnd-test-backend'
 import isString from 'lodash/isString'
 import * as Types from './types'
 import { NormalSource, NonDraggableSource, BadItemSource } from './sources'

@@ -1,5 +1,5 @@
 import wrapConnectorHooks from './wrapConnectorHooks'
-import { IBackend, Unsubscribe } from 'dnd-core'
+import { IBackend, Unsubscribe } from '@factro/dnd-core'
 
 const shallowEqual = require('shallowequal')
 

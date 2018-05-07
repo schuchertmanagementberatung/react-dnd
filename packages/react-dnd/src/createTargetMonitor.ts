@@ -4,9 +4,9 @@ import {
 	IDragDropManager,
 	IDragDropMonitor,
 	IXYCoord,
-} from 'dnd-core'
+} from '@factro/dnd-core'
 import { IDropTargetMonitor } from './interfaces'
-import { IDropTarget } from 'dnd-core'
+import { IDropTarget } from '@factro/dnd-core'
 
 let isCallingCanDrop = false
 

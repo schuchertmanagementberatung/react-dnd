@@ -7,7 +7,7 @@ import {
 	IDragDropMonitor,
 	IHandlerRegistry,
 	IXYCoord,
-} from 'dnd-core'
+} from '@factro/dnd-core'
 import EnterLeaveCounter from './EnterLeaveCounter'
 import { isFirefox } from './BrowserDetector'
 import {

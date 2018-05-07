@@ -5,8 +5,8 @@ import {
 	Unsubscribe,
 	Listener,
 	IXYCoord,
-} from 'dnd-core'
-import { ItemType } from 'dnd-core'
+} from '@factro/dnd-core'
+import { ItemType } from '@factro/dnd-core'
 import { IDragSourceMonitor } from './interfaces'
 
 let isCallingCanDrag = false

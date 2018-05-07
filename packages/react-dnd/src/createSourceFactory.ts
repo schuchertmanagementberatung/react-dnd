@@ -1,6 +1,6 @@
 import invariant from 'invariant'
 import isPlainObject from 'lodash/isPlainObject'
-import { IDragSource, IDragDropMonitor } from 'dnd-core'
+import { IDragSource, IDragDropMonitor } from '@factro/dnd-core'
 
 const ALLOWED_SPEC_METHODS = ['canDrag', 'beginDrag', 'isDragging', 'endDrag']
 const REQUIRED_SPEC_METHODS = ['beginDrag']

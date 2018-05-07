@@ -1,4 +1,4 @@
-import createTestBackend, { ITestBackend } from 'react-dnd-test-backend'
+import createTestBackend, { ITestBackend } from '@factro/react-dnd-test-backend'
 import * as Types from './types'
 import { NormalSource, NonDraggableSource, NumberSource } from './sources'
 import {

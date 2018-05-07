@@ -6,7 +6,7 @@ import {
 	IDragSourceConnector,
 	IDragSourceMonitor,
 	DragSourceCollector,
-} from 'react-dnd'
+} from '@factro/react-dnd'
 import ItemTypes from './ItemTypes'
 
 const knightSource = {

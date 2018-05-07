@@ -6,7 +6,7 @@ import {
 	IDropTargetConnector,
 	DropTargetCollector,
 	JsxWrapper,
-} from 'react-dnd'
+} from '@factro/react-dnd'
 import Square from './Square'
 import { canMoveKnight, moveKnight } from './Game'
 import ItemTypes from './ItemTypes'
