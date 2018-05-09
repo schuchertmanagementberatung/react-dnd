@@ -4,7 +4,7 @@ import hoistStatics from 'hoist-non-react-statics'
 import isPlainObject from 'lodash/isPlainObject'
 import invariant from 'invariant'
 import checkDecoratorArguments from './utils/checkDecoratorArguments'
-import { IDragDropManager, Unsubscribe } from 'dnd-core'
+import { IDragDropManager, Unsubscribe } from '@factro/dnd-core'
 import {
 	DragLayerCollector,
 	IDragLayerOptions,

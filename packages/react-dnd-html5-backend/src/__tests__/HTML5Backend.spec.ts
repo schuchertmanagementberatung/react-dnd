@@ -1,5 +1,5 @@
 import HTML5Backend from '../HTML5Backend'
-import { IDragDropManager } from 'dnd-core'
+import { IDragDropManager } from '@factro/dnd-core'
 import { IHTML5BackendContext } from '../interfaces'
 
 describe('The HTML5 Backend', () => {

@@ -2,7 +2,7 @@
 // HACK: copied from dnd-core. duplicating here to fix a CI issue
 //
 import isArray from 'lodash/isArray'
-import { ItemType, TargetType } from 'dnd-core'
+import { ItemType, TargetType } from '@factro/dnd-core'
 
 export default function matchesType(
 	targetType: TargetType | null,

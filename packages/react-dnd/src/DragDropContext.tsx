@@ -1,6 +1,6 @@
 import React, { Component, ComponentClass } from 'react'
 import PropTypes from 'prop-types'
-import { DragDropManager, IBackend, BackendFactory } from 'dnd-core'
+import { DragDropManager, IBackend, BackendFactory } from '@factro/dnd-core'
 import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
 import checkDecoratorArguments from './utils/checkDecoratorArguments'

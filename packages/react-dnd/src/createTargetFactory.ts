@@ -1,6 +1,6 @@
 import invariant from 'invariant'
 import isPlainObject from 'lodash/isPlainObject'
-import { IDragDropMonitor, IDropTarget } from 'dnd-core'
+import { IDragDropMonitor, IDropTarget } from '@factro/dnd-core'
 import { MemoVoidArrayIterator } from 'lodash'
 
 const ALLOWED_SPEC_METHODS = ['canDrop', 'hover', 'drop']

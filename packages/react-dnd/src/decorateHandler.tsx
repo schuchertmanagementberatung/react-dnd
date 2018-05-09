@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import isPlainObject from 'lodash/isPlainObject'
 import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
-import { IDragDropManager } from 'dnd-core'
+import { IDragDropManager } from '@factro/dnd-core'
 import { IDndComponentClass, IDndComponent } from './interfaces'
 
 const shallowEqual = require('shallowequal')
@@ -97,7 +97,6 @@ export default function decorateHandler<P>({
 			this.disposable = new SerialDisposable()
 			this.currentType = undefined
 			this.receiveProps(this.props)
-			this.handleChange()
 		}
 
 		public componentWillReceiveProps(nextProps: any) {

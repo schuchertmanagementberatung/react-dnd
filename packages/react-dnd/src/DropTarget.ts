@@ -1,7 +1,7 @@
 import React, { StatelessComponent, Component, ComponentClass } from 'react'
 import invariant from 'invariant'
 import isPlainObject from 'lodash/isPlainObject'
-import { IBackend, TargetType, IDragDropMonitor } from 'dnd-core'
+import { IBackend, TargetType, IDragDropMonitor } from '@factro/dnd-core'
 import {
 	IDropTargetSpecification,
 	IDropTargetOptions,

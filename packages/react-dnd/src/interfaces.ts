@@ -4,7 +4,7 @@ import {
 	IXYCoord,
 	ItemType,
 	IDragDropManager,
-} from 'dnd-core'
+} from '@factro/dnd-core'
 
 export interface IContextComponent<P, S> extends React.Component<P, S> {
 	getDecoratedComponentInstance(): React.Component<P, S>
