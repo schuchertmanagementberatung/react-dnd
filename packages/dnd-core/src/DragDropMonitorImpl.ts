@@ -16,6 +16,9 @@ import {
 	Identifier,
 } from './interfaces'
 
+let subscribeCallbacks: Array<() => void> = []
+let unsubscribeCallbacks: Array<() => void> = []
+
 export class DragDropMonitorImpl implements DragDropMonitor {
 	private store: Store<State>
 	public readonly registry: HandlerRegistry
@@ -54,42 +57,42 @@ export class DragDropMonitorImpl implements DragDropMonitor {
 			}
 		}
 
-    if (subscribeCallbacks.length === 0) {
-      setTimeout(() => {
-        for (const callback of subscribeCallbacks) {
-          if (callback !== undefined) {
-            callback();
-          }
-        }
-        subscribeCallbacks = [];
-      }, 10);
-    }
+		if (subscribeCallbacks.length === 0) {
+			setTimeout(() => {
+				for (const callback of subscribeCallbacks) {
+					if (callback !== undefined) {
+						callback()
+					}
+				}
+				subscribeCallbacks = []
+			}, 10)
+		}
 
-    let handler: () => void;
-    const handlerIndex = subscribeCallbacks.length;
-    subscribeCallbacks.push(() => {
-      handler = this.store.subscribe(handleChange);
-    });
+		let handler: () => void
+		const handlerIndex = subscribeCallbacks.length
+		subscribeCallbacks.push(() => {
+			handler = this.store.subscribe(handleChange)
+		})
 
 		return () => {
-      if (handler === undefined) {
-        // unsubscribe was called before the defered subcsribtion was executed,
-        // therefore cancel the subscription execution: it's no longer needed.
-        delete subscribeCallbacks[handlerIndex];
-        return;
-      }
+			if (handler === undefined) {
+				// unsubscribe was called before the defered subcsribtion was executed,
+				// therefore cancel the subscription execution: it's no longer needed.
+				delete subscribeCallbacks[handlerIndex]
+				return
+			}
 
-      if (unsubscribeCallbacks.length === 0) {
-        setTimeout(() => {
-          for (const callback of unsubscribeCallbacks) {
-            callback();
-          }
-          unsubscribeCallbacks = [];
-        }, 10);
-      }
+			if (unsubscribeCallbacks.length === 0) {
+				setTimeout(() => {
+					for (const callback of unsubscribeCallbacks) {
+						callback()
+					}
+					unsubscribeCallbacks = []
+				}, 10)
+			}
 
-      unsubscribeCallbacks.push(handler);
-    }
+			unsubscribeCallbacks.push(handler)
+		}
 	}
 
 	public subscribeToOffsetChange(listener: Listener): Unsubscribe {

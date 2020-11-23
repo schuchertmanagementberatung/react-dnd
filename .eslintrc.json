@@ -20,7 +20,6 @@
     "node": true
   },
   "rules": {
-    "no-for-of-loops/no-for-of-loops": 2,
     "react/prop-types": 0,
 
     // TODO: re-enable
