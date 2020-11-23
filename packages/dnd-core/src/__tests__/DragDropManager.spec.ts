@@ -1,5 +1,6 @@
-import createTestBackend, { ITestBackend } from '@factro/react-dnd-test-backend'
-import isString from 'lodash/isString'
+declare const setImmediate: any
+
+import { TestBackend, ITestBackend } from 'react-dnd-test-backend'
 import * as Types from './types'
 import { NormalSource, NonDraggableSource, BadItemSource } from './sources'
 import {
@@ -9,22 +10,24 @@ import {
 	BadResultTarget,
 	TransformResultTarget,
 } from './targets'
-import DragDropManagerImpl from '../DragDropManager'
-import { IDragDropManager, IBackend, IHandlerRegistry } from '../interfaces'
+import { DragDropManagerImpl } from '../DragDropManagerImpl'
+import { DragDropManager, HandlerRegistry } from '../interfaces'
+import { isString } from '../utils/js_utils'
 
 describe('DragDropManager', () => {
-	let manager: IDragDropManager<any>
+	let manager: DragDropManager
 	let backend: ITestBackend
-	let registry: IHandlerRegistry
+	let registry: HandlerRegistry
 
 	beforeEach(() => {
-		manager = new DragDropManagerImpl(createTestBackend as any)
-		backend = (manager.getBackend() as any) as ITestBackend
+		manager = new DragDropManagerImpl()
+		backend = TestBackend(manager, null, null) as ITestBackend
+		;(manager as any).receiveBackend(backend)
 		registry = manager.getRegistry()
 	})
 
 	describe('handler registration', () => {
-		it('registers and unregisters drag sources', done => {
+		it('registers and unregisters drag sources', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			expect(registry.getSource(sourceId)).toEqual(source)
@@ -38,7 +41,7 @@ describe('DragDropManager', () => {
 			})
 		})
 
-		it('registers and unregisters drop targets', done => {
+		it('registers and unregisters drop targets', (done) => {
 			const target = new NormalTarget()
 			const targetId = registry.addTarget(Types.FOO, target)
 			expect(registry.getTarget(targetId)).toEqual(target)
@@ -52,7 +55,7 @@ describe('DragDropManager', () => {
 			})
 		})
 
-		it('registers and unregisters multi-type drop targets', done => {
+		it('registers and unregisters multi-type drop targets', (done) => {
 			const target = new NormalTarget()
 			const targetId = registry.addTarget([Types.FOO, Types.BAR], target)
 			expect(registry.getTarget(targetId)).toEqual(target)
@@ -202,7 +205,7 @@ describe('DragDropManager', () => {
 				expect(() => backend.simulateBeginDrag([sourceId])).toThrow()
 			})
 
-			it('throws in beginDrag() if it is called with an invalid handles', done => {
+			it('throws in beginDrag() if it is called with an invalid handles', (done) => {
 				const source = new NormalSource()
 				const sourceId = registry.addSource(Types.FOO, source)
 				const target = new NormalTarget()
@@ -306,7 +309,7 @@ describe('DragDropManager', () => {
 
 			it('throws in endDrag() if it is called outside a drag operation', () => {
 				const source = new NormalSource()
-				const sourceId = registry.addSource(Types.FOO, source)
+				registry.addSource(Types.FOO, source)
 				expect(() => backend.simulateEndDrag()).toThrow()
 			})
 

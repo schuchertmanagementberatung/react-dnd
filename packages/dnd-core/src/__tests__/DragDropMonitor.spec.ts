@@ -1,4 +1,4 @@
-import createTestBackend, { ITestBackend } from '@factro/react-dnd-test-backend'
+import { ITestBackend, TestBackend } from 'react-dnd-test-backend'
 import * as Types from './types'
 import { NormalSource, NonDraggableSource, NumberSource } from './sources'
 import {
@@ -7,28 +7,33 @@ import {
 	TargetWithNoDropResult,
 } from './targets'
 import {
-	IDragDropManager,
-	IHandlerRegistry,
-	IDragDropMonitor,
+	DragDropManager,
+	HandlerRegistry,
+	DragDropMonitor,
 } from '../interfaces'
-import DragDropManager from '../DragDropManager'
+import { DragDropManagerImpl } from '../DragDropManagerImpl'
 
 describe.only('DragDropMonitor', () => {
-	let manager: IDragDropManager<any>
+	let manager: DragDropManager
 	let backend: ITestBackend
-	let registry: IHandlerRegistry
-	let monitor: IDragDropMonitor
+	let registry: HandlerRegistry
+	let monitor: DragDropMonitor
 
 	beforeEach(() => {
-		manager = new DragDropManager(createTestBackend as any)
-		backend = (manager.getBackend() as any) as ITestBackend
+		manager = new DragDropManagerImpl()
+		backend = TestBackend(manager, null, null) as ITestBackend
+		;(manager as any).receiveBackend(backend)
 		registry = manager.getRegistry()
 		monitor = manager.getMonitor()
 	})
 
 	describe('state change subscription', () => {
 		it('throws on bad listener', () => {
-			expect(() => monitor.subscribeToStateChange(() => { /* empty */ })).not.toThrow()
+			expect(() =>
+				monitor.subscribeToStateChange(() => {
+					/* empty */
+				}),
+			).not.toThrow()
 
 			expect(() => (monitor as any).subscribeToStateChange()).toThrow()
 			expect(() => (monitor as any).subscribeToStateChange(42)).toThrow()
@@ -38,16 +43,40 @@ describe.only('DragDropMonitor', () => {
 
 		it('throws on bad handlerIds', () => {
 			expect(() =>
-				monitor.subscribeToStateChange(() => {/* empty */}, { handlerIds: [] }),
+				monitor.subscribeToStateChange(
+					() => {
+						/* empty */
+					},
+					{ handlerIds: [] },
+				),
 			).not.toThrow()
 			expect(() =>
-				monitor.subscribeToStateChange(() => {/* empty */}, { handlerIds: ['hi'] }),
+				monitor.subscribeToStateChange(
+					() => {
+						/* empty */
+					},
+					{ handlerIds: ['hi'] },
+				),
 			).not.toThrow()
 			expect(() =>
-				monitor.subscribeToStateChange(() => {/* empty */}, { handlerIds: {} as any}),
+				monitor.subscribeToStateChange(
+					() => {
+						/* empty */
+					},
+					{ handlerIds: {} as any },
+				),
 			).toThrow()
 			expect(() =>
-				monitor.subscribeToStateChange(() => {/* empty */}, { handlerIds: (() => {/* empty */}) as any }),
+				monitor.subscribeToStateChange(
+					() => {
+						/* empty */
+					},
+					{
+						handlerIds: (() => {
+							/* empty */
+						}) as any,
+					},
+				),
 			).toThrow()
 		})
 
@@ -67,7 +96,7 @@ describe.only('DragDropMonitor', () => {
 			expect(raisedChange).toEqual(false)
 		})
 
-		it('raises global change event on beginDrag()', done => {
+		it('raises global change event on beginDrag()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 
@@ -77,7 +106,7 @@ describe.only('DragDropMonitor', () => {
       }, 10)
 		})
 
-		it('raises global change event on beginDrag() even if a subscriber causes other changes', done => {
+		it('raises global change event on beginDrag() even if a subscriber causes other changes', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()
@@ -492,7 +521,7 @@ describe.only('DragDropMonitor', () => {
       }, 10)
 		})
 
-		it('raises global change event on endDrag()', done => {
+		it('raises global change event on endDrag()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()
@@ -505,7 +534,7 @@ describe.only('DragDropMonitor', () => {
       }, 10)
 		})
 
-		it('raises global change event on drop()', done => {
+		it('raises global change event on drop()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()
@@ -569,7 +598,11 @@ describe.only('DragDropMonitor', () => {
 
 	describe('offset change subscription', () => {
 		it('throws on bad listener', () => {
-			expect(() => monitor.subscribeToOffsetChange(() => {/* empty */})).not.toThrow()
+			expect(() =>
+				monitor.subscribeToOffsetChange(() => {
+					/* empty */
+				}),
+			).not.toThrow()
 			expect(() => (monitor as any).subscribeToOffsetChange()).toThrow()
 			expect(() => (monitor as any).subscribeToOffsetChange(42)).toThrow()
 			expect(() => (monitor as any).subscribeToOffsetChange('hi')).toThrow()
@@ -826,7 +859,7 @@ describe.only('DragDropMonitor', () => {
 			expect(monitor.getDifferenceFromInitialOffset()).toEqual(null)
 		})
 
-		it('raises offset change event on beginDrag()', done => {
+		it('raises offset change event on beginDrag()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 
@@ -837,7 +870,7 @@ describe.only('DragDropMonitor', () => {
 			})
 		})
 
-		it('raises offset change event on hover() if clientOffset changed', done => {
+		it('raises offset change event on hover() if clientOffset changed', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()
@@ -901,7 +934,7 @@ describe.only('DragDropMonitor', () => {
 			expect(raisedChange).toEqual(true)
 		})
 
-		it('raises offset change event on endDrag()', done => {
+		it('raises offset change event on endDrag()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()
@@ -912,7 +945,7 @@ describe.only('DragDropMonitor', () => {
 			backend.simulateEndDrag()
 		})
 
-		it('raises offset change event on drop()', done => {
+		it('raises offset change event on drop()', (done) => {
 			const source = new NormalSource()
 			const sourceId = registry.addSource(Types.FOO, source)
 			const target = new NormalTarget()

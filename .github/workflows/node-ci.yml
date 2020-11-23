@@ -1,0 +1,47 @@
+name: Node CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: yarn version check
+        if: "github.actor != 'dependabot-preview[bot]' && !contains(github.ref , 'release/') && !contains(github.head_ref , 'release/')"
+        name: Version Check
+
+      - run: yarn install
+        name: Install Dependencies
+
+      - run: yarn ci
+        name: Execute Tests
+        env:
+          CI: true
+
+      - name: Publish coverage to codecov.io
+        uses: codecov/codecov-action@v1.0.13
+        if: success() && matrix.node-version == '14.x'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  auto-merge:
+    name: Auto-Merge Dependabot PRs
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot-preview[bot]'
+    needs:
+      - build
+    steps:
+      - name: auto-merge
+        if: github.actor == 'dependabot-preview[bot]'
+        uses: ridedott/dependabot-auto-merge-action@main
+        with:
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PAT }}

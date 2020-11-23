@@ -1,8 +1,7 @@
-import invariant from 'invariant'
-import isArray from 'lodash/isArray'
-import { IDragSource, IDropTarget, ItemType } from './interfaces'
+import { invariant } from '@react-dnd/invariant'
+import { DragSource, DropTarget, Identifier } from './interfaces'
 
-export function validateSourceContract(source: IDragSource) {
+export function validateSourceContract(source: DragSource): void {
 	invariant(
 		typeof source.canDrag === 'function',
 		'Expected canDrag to be a function.',
@@ -17,7 +16,7 @@ export function validateSourceContract(source: IDragSource) {
 	)
 }
 
-export function validateTargetContract(target: IDropTarget) {
+export function validateTargetContract(target: DropTarget): void {
 	invariant(
 		typeof target.canDrop === 'function',
 		'Expected canDrop to be a function.',
@@ -32,9 +31,12 @@ export function validateTargetContract(target: IDropTarget) {
 	)
 }
 
-export function validateType(type: ItemType, allowArray?: boolean) {
-	if (allowArray && isArray(type)) {
-		type.forEach(t => validateType(t, false))
+export function validateType(
+	type: Identifier | Identifier[],
+	allowArray?: boolean,
+): void {
+	if (allowArray && Array.isArray(type)) {
+		type.forEach((t) => validateType(t, false))
 		return
 	}
 

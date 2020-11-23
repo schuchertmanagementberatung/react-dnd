@@ -1,7 +1,15 @@
-import invariant from 'invariant'
 import { cloneElement } from 'react'
+import { invariant } from '@react-dnd/invariant'
 
-export default function cloneWithRef(
+function setRef(ref: any, node: any) {
+	if (typeof ref === 'function') {
+		ref(node)
+	} else {
+		ref.current = node
+	}
+}
+
+export function cloneWithRef(
 	element: any,
 	newRef: any,
 ): React.ReactElement<any> {
@@ -18,14 +26,12 @@ export default function cloneWithRef(
 		return cloneElement(element, {
 			ref: newRef,
 		})
+	} else {
+		return cloneElement(element, {
+			ref: (node: any) => {
+				setRef(previousRef, node)
+				setRef(newRef, node)
+			},
+		})
 	}
-
-	return cloneElement(element, {
-		ref: (node: any) => {
-			newRef(node)
-			if (previousRef) {
-				previousRef(node)
-			}
-		},
-	})
 }

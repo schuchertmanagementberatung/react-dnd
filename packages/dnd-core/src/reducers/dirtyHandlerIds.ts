@@ -1,5 +1,3 @@
-import xor from 'lodash/xor'
-import intersection from 'lodash/intersection'
 import {
 	BEGIN_DRAG,
 	PUBLISH_DRAG_SOURCE,
@@ -13,18 +11,23 @@ import {
 	REMOVE_SOURCE,
 	REMOVE_TARGET,
 } from '../actions/registry'
-import { IAction } from '../interfaces'
-
-const NONE: string[] = []
-const ALL: string[] = []
+import { Action } from '../interfaces'
+import { areArraysEqual } from '../utils/equality'
+import { NONE, ALL } from '../utils/dirtiness'
+import { xor } from '../utils/js_utils'
 
 export type State = string[]
 
-export default function dirtyHandlerIds(
-	state: State = NONE,
-	action: IAction<{ targetIds: string[] }>,
-	dragOperation: { targetIds: string[] },
-) {
+export interface DirtyHandlerIdPayload {
+	targetIds: string[]
+	prevTargetIds: string[]
+}
+
+export function reduce(
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_state: State = NONE,
+	action: Action<DirtyHandlerIdPayload>,
+): State {
 	switch (action.type) {
 		case HOVER:
 			break
@@ -41,29 +44,19 @@ export default function dirtyHandlerIds(
 			return ALL
 	}
 
-	const { targetIds } = action.payload
-	const { targetIds: prevTargetIds } = dragOperation
+	const { targetIds = [], prevTargetIds = [] } = action.payload
 	const result = xor(targetIds, prevTargetIds)
-
-	let didChange = false
-	if (result.length === 0) {
-		for (let i = 0; i < targetIds.length; i++) {
-			if (targetIds[i] !== prevTargetIds[i]) {
-				didChange = true
-				break
-			}
-		}
-	} else {
-		didChange = true
-	}
+	const didChange =
+		result.length > 0 || !areArraysEqual(targetIds, prevTargetIds)
 
 	if (!didChange) {
 		return NONE
 	}
 
+	// Check the target ids at the innermost position. If they are valid, add them
+	// to the result
 	const prevInnermostTargetId = prevTargetIds[prevTargetIds.length - 1]
 	const innermostTargetId = targetIds[targetIds.length - 1]
-
 	if (prevInnermostTargetId !== innermostTargetId) {
 		if (prevInnermostTargetId) {
 			result.push(prevInnermostTargetId)
@@ -74,16 +67,4 @@ export default function dirtyHandlerIds(
 	}
 
 	return result
-}
-
-export function areDirty(state: string[], handlerIds: string[] | undefined) {
-	if (state === NONE) {
-		return false
-	}
-
-	if (state === ALL || typeof handlerIds === 'undefined') {
-		return true
-	}
-
-	return intersection(handlerIds, state).length > 0
 }

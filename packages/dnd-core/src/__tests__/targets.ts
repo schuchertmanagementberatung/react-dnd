@@ -1,79 +1,79 @@
-// tslint:disable max-classes-per-file
-
-import { DropTarget } from '..'
-import { IDragDropMonitor } from '../interfaces'
+import { DropTargetImpl as DropTarget } from './DropTargetImpl'
+import { DragDropMonitor } from '../interfaces'
 
 export class NormalTarget extends DropTarget {
-	public didCallDrop: boolean = false
-	public didCallHover: boolean = false
-	public dropResult: any
+	public didCallDrop = false
+	public didCallHover = false
+	public dropResult: Record<string, any>
 
-	constructor(dropResult?: any) {
+	public constructor(dropResult?: Record<string, any>) {
 		super()
 		this.dropResult = dropResult || { foo: 'bar' }
 	}
 
-	public hover() {
+	public hover(): void {
 		this.didCallHover = true
 	}
 
-	public drop() {
+	public drop(): any {
 		this.didCallDrop = true
 		return this.dropResult
 	}
 }
 
 export class NonDroppableTarget extends DropTarget {
-	public didCallDrop: boolean = false
-	public didCallHover: boolean = false
+	public didCallDrop = false
+	public didCallHover = false
 
-	public canDrop() {
+	public canDrop(): boolean {
 		return false
 	}
 
-	public hover() {
+	public hover(): void {
 		this.didCallHover = true
 	}
 
-	public drop() {
+	public drop(): void {
 		this.didCallDrop = true
 	}
 }
 
 export class TargetWithNoDropResult extends DropTarget {
-	public didCallDrop: boolean = false
-	public didCallHover: boolean = false
+	public didCallDrop = false
+	public didCallHover = false
 
-	public hover() {
+	public hover(): void {
 		this.didCallHover = true
 	}
 
-	public drop() {
+	public drop(): void {
 		this.didCallDrop = true
 	}
 }
 
 export class BadResultTarget extends DropTarget {
-	public drop() {
+	public drop(): any {
 		return 42
 	}
 }
 
 export class TransformResultTarget extends DropTarget {
-	public didCallDrop: boolean = false
-	public didCallHover: boolean = false
+	public didCallDrop = false
+	public didCallHover = false
+	private transform: (input: any) => any
 
-	constructor(public transform: any) {
+	public constructor(transform: (input: any) => any) {
 		super()
+		this.transform = transform
 	}
 
-	public hover() {
+	public hover(): void {
 		this.didCallHover = true
 	}
 
-	public drop(monitor: IDragDropMonitor) {
+	public drop(monitor: DragDropMonitor): any {
 		this.didCallDrop = true
 		const dropResult = monitor.getDropResult()
-		return this.transform(dropResult)
+		return this.transform(dropResult) as any
 	}
 }

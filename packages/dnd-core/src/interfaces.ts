@@ -1,9 +1,10 @@
-import { Unsubscribe } from 'redux'
-
+export type Identifier = string | symbol
+export type SourceType = Identifier
+export type TargetType = Identifier | Identifier[]
 export type Unsubscribe = () => void
 export type Listener = () => void
 
-export interface IXYCoord {
+export interface XYCoord {
 	x: number
 	y: number
 }
@@ -13,33 +14,34 @@ export enum HandlerRole {
 	TARGET = 'TARGET',
 }
 
-export interface IBackend {
+export interface Backend {
 	setup(): void
 	teardown(): void
 	connectDragSource(sourceId: any, node?: any, options?: any): Unsubscribe
 	connectDragPreview(sourceId: any, node?: any, options?: any): Unsubscribe
 	connectDropTarget(targetId: any, node?: any, options?: any): Unsubscribe
+	profile(): Record<string, number>
 }
 
-export interface IDragDropMonitor {
+export interface DragDropMonitor {
 	subscribeToStateChange(
 		listener: Listener,
 		options?: {
-			handlerIds: string[] | undefined
+			handlerIds: Identifier[] | undefined
 		},
 	): Unsubscribe
 	subscribeToOffsetChange(listener: Listener): Unsubscribe
-	canDragSource(sourceId: string): boolean
-	canDropOnTarget(targetId: string): boolean
+	canDragSource(sourceId: Identifier | undefined): boolean
+	canDropOnTarget(targetId: Identifier | undefined): boolean
 
 	/**
 	 * Returns true if a drag operation is in progress, and either the owner initiated the drag, or its isDragging()
 	 * is defined and returns true.
 	 */
 	isDragging(): boolean
-	isDraggingSource(sourceId: string): boolean
+	isDraggingSource(sourceId: Identifier | undefined): boolean
 	isOverTarget(
-		targetId: string,
+		targetId: Identifier | undefined,
 		options?: {
 			shallow?: boolean
 		},
@@ -48,15 +50,15 @@ export interface IDragDropMonitor {
 	/**
 	 * Returns a string or an ES6 symbol identifying the type of the current dragged item. Returns null if no item is being dragged.
 	 */
-	getItemType(): ItemType | null
+	getItemType(): Identifier | null
 
 	/**
 	 * Returns a plain object representing the currently dragged item. Every drag source must specify it by returning an object
 	 * from its beginDrag() method. Returns null if no item is being dragged.
 	 */
 	getItem(): any
-	getSourceId(): string | null
-	getTargetIds(): string[]
+	getSourceId(): Identifier | null
+	getTargetIds(): Identifier[]
 	/**
 	 * Returns a plain object representing the last recorded drop result. The drop targets may optionally specify it by returning an
 	 * object from their drop() methods. When a chain of drop() is dispatched for the nested targets, bottom up, any parent that
@@ -75,127 +77,133 @@ export interface IDragDropMonitor {
 	 * Returns the { x, y } client offset of the pointer at the time when the current drag operation has started.
 	 * Returns null if no item is being dragged.
 	 */
-	getInitialClientOffset(): IXYCoord | null
+	getInitialClientOffset(): XYCoord | null
 	/**
 	 * Returns the { x, y } client offset of the drag source component's root DOM node at the time when the current drag
 	 * operation has started. Returns null if no item is being dragged.
 	 */
-	getInitialSourceClientOffset(): IXYCoord | null
+	getInitialSourceClientOffset(): XYCoord | null
 
 	/**
 	 * Returns the last recorded { x, y } client offset of the pointer while a drag operation is in progress.
 	 * Returns null if no item is being dragged.
 	 */
-	getClientOffset(): IXYCoord | null
+	getClientOffset(): XYCoord | null
 
 	/**
 	 * Returns the projected { x, y } client offset of the drag source component's root DOM node, based on its position at the time
 	 * when the current drag operation has started, and the movement difference. Returns null if no item is being dragged.
 	 */
-	getSourceClientOffset(): IXYCoord | null
+	getSourceClientOffset(): XYCoord | null
 
 	/**
 	 * Returns the { x, y } difference between the last recorded client offset of the pointer and the client offset when the current
 	 * drag operation has started. Returns null if no item is being dragged.
 	 */
-	getDifferenceFromInitialOffset(): IXYCoord | null
+	getDifferenceFromInitialOffset(): XYCoord | null
 }
 
-export interface IHandlerRegistry {
-	addSource(type: ItemType, source: IDragSource): string
-	addTarget(type: TargetType, target: IDropTarget): string
-	containsHandler(handler: IDragSource | IDropTarget): boolean
-	getSource(sourceId: string, includePinned?: boolean): IDragSource
-	getSourceType(sourceId: string): ItemType
-	getTargetType(targetId: string): ItemType
-	getTarget(targetId: string): IDropTarget
-	isSourceId(handlerId: string): boolean
-	isTargetId(handlerId: string): boolean
-	removeSource(sourceId: string): void
-	removeTarget(targetId: string): void
-	pinSource(sourceId: string): void
+export interface HandlerRegistry {
+	addSource(type: SourceType, source: DragSource): Identifier
+	addTarget(type: TargetType, target: DropTarget): Identifier
+	containsHandler(handler: DragSource | DropTarget): boolean
+	getSource(sourceId: Identifier, includePinned?: boolean): DragSource
+	getSourceType(sourceId: Identifier): SourceType
+	getTargetType(targetId: Identifier): TargetType
+	getTarget(targetId: Identifier): DropTarget
+	isSourceId(handlerId: Identifier): boolean
+	isTargetId(handlerId: Identifier): boolean
+	removeSource(sourceId: Identifier): void
+	removeTarget(targetId: Identifier): void
+	pinSource(sourceId: Identifier): void
 	unpinSource(): void
 }
 
-export interface IAction<Payload> {
-	type: string
+export interface Action<Payload> {
+	type: Identifier
 	payload: Payload
 }
-export interface ISentinelAction {
-	type: string
+export interface SentinelAction {
+	type: Identifier
 }
 
-export type ActionCreator<Payload> = (args: any[]) => IAction<Payload>
+export type ActionCreator<Payload> = (args: any[]) => Action<Payload>
 
-export interface IBeginDragOptions {
+export interface BeginDragOptions {
 	publishSource?: boolean
-	clientOffset?: IXYCoord
-	getSourceClientOffset?: (sourceId: ItemType) => IXYCoord
+	clientOffset?: XYCoord
+	getSourceClientOffset?: (sourceId: Identifier) => XYCoord
 }
 
-export interface IBeginDragPayload {
-	itemType: ItemType
+export interface InitCoordsPayload {
+	clientOffset: XYCoord | null
+	sourceClientOffset: XYCoord | null
+}
+
+export interface BeginDragPayload {
+	itemType: Identifier
 	item: any
-	sourceId: ItemType
-	clientOffset: IXYCoord | null
-	sourceClientOffset: IXYCoord | null
+	sourceId: Identifier
+	clientOffset: XYCoord | null
+	sourceClientOffset: XYCoord | null
 	isSourcePublic: boolean
 }
 
-export interface IHoverPayload {
-	targetIds: ItemType[]
-	clientOffset: IXYCoord | null
+export interface HoverPayload {
+	targetIds: Identifier[]
+	clientOffset: XYCoord | null
 }
 
-export interface IHoverOptions {
-	clientOffset?: IXYCoord
+export interface HoverOptions {
+	clientOffset?: XYCoord
 }
 
-export interface IDropPayload {
+export interface DropPayload {
 	dropResult: any
 }
 
-export interface ITargetIdPayload {
-	targetId: string
+export interface TargetIdPayload {
+	targetId: Identifier
 }
 
-export interface ISourceIdPayload {
-	sourceId: string
+export interface SourceIdPayload {
+	sourceId: Identifier
 }
 
-export interface IDragDropActions {
-	beginDrag(sourceIds: string[], options?: any): IAction<IBeginDragPayload>
-	publishDragSource(): ISentinelAction
-	hover(targetIds: string[], options?: any): IAction<IHoverPayload>
+export interface DragDropActions {
+	beginDrag(
+		sourceIds?: Identifier[],
+		options?: any,
+	): Action<BeginDragPayload> | undefined
+	publishDragSource(): SentinelAction | undefined
+	hover(targetIds: Identifier[], options?: any): Action<HoverPayload>
 	drop(options?: any): void
-	endDrag(): ISentinelAction
+	endDrag(): SentinelAction
 }
 
-export interface IDragDropManager<Context> {
-	getContext(): Context
-	getMonitor(): IDragDropMonitor
-	getBackend(): IBackend
-	getRegistry(): IHandlerRegistry
-	getActions(): IDragDropActions
+export interface DragDropManager {
+	getMonitor(): DragDropMonitor
+	getBackend(): Backend
+	getRegistry(): HandlerRegistry
+	getActions(): DragDropActions
 	dispatch(action: any): void
 }
 
 export type BackendFactory = (
-	dragDropManager: IDragDropManager<any>,
-) => IBackend
+	manager: DragDropManager,
+	globalContext?: any,
+	configuration?: any,
+) => Backend
 
-export interface IDragSource {
-	beginDrag(monitor: IDragDropMonitor, targetId: string): void
-	endDrag(monitor: IDragDropMonitor, targetId: string): void
-	canDrag(monitor: IDragDropMonitor, targetId: string): boolean
-	isDragging(monitor: IDragDropMonitor, targetId: string): boolean
+export interface DragSource {
+	beginDrag(monitor: DragDropMonitor, targetId: Identifier): void
+	endDrag(monitor: DragDropMonitor, targetId: Identifier): void
+	canDrag(monitor: DragDropMonitor, targetId: Identifier): boolean
+	isDragging(monitor: DragDropMonitor, targetId: Identifier): boolean
 }
 
-export interface IDropTarget {
-	canDrop(monitor: IDragDropMonitor, targetId: string): boolean
-	hover(monitor: IDragDropMonitor, targetId: string): void
-	drop(monitor: IDragDropMonitor, targetId: string): any
+export interface DropTarget {
+	canDrop(monitor: DragDropMonitor, targetId: Identifier): boolean
+	hover(monitor: DragDropMonitor, targetId: Identifier): void
+	drop(monitor: DragDropMonitor, targetId: Identifier): any
 }
-
-export type ItemType = string | symbol
-export type TargetType = ItemType | ItemType[]

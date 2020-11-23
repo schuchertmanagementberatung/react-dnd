@@ -1,62 +1,65 @@
-// tslint:disable max-classes-per-file
-
-import { DragSource } from '..'
-import { IDragDropMonitor } from '../interfaces'
+import { DragSourceImpl as DragSource } from './DragSourceImpl'
+import { DragDropMonitor } from '../interfaces'
 
 export class NormalSource extends DragSource {
 	public didCallBeginDrag = false
 	public recordedDropResult: any
+	public item: Record<string, any>
 
-	constructor(public item?: any) {
+	public constructor(item?: Record<string, any>) {
 		super()
 		this.item = item || { baz: 42 }
 	}
 
-	public beginDrag() {
+	public beginDrag(): any {
 		this.didCallBeginDrag = true
 		return this.item
 	}
 
-	public endDrag(monitor: IDragDropMonitor) {
+	public endDrag(monitor: DragDropMonitor): void {
 		this.recordedDropResult = monitor.getDropResult()
 	}
 }
 
 export class NonDraggableSource extends DragSource {
-	public didCallBeginDrag: boolean = false
+	public didCallBeginDrag = false
 
-	public canDrag() {
+	public canDrag(): boolean {
 		return false
 	}
 
-	public beginDrag() {
+	public beginDrag(): any {
 		this.didCallBeginDrag = true
 		return {}
 	}
 }
 
 export class BadItemSource extends DragSource {
-	public beginDrag() {
+	public beginDrag(): any {
 		return 42
 	}
 }
 
 export class NumberSource extends DragSource {
-	// tslint:disable-next-line variable-name
-	constructor(public number: number, public allowDrag: boolean) {
+	public number: number
+	public allowDrag: boolean
+
+	public constructor(number: number, allowDrag: boolean) {
 		super()
+		this.number = number
+		this.allowDrag = allowDrag
 	}
 
-	public canDrag() {
+	public canDrag(): boolean {
 		return this.allowDrag
 	}
 
-	public isDragging(monitor: IDragDropMonitor) {
+	public isDragging(monitor: DragDropMonitor): boolean {
 		const item = monitor.getItem()
 		return item.number === this.number
 	}
 
-	public beginDrag() {
+	public beginDrag(): any {
 		return {
 			number: this.number,
 		}

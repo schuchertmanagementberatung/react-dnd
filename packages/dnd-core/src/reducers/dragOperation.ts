@@ -1,5 +1,3 @@
-import without from 'lodash/without'
-import { Action } from 'redux-actions'
 import {
 	BEGIN_DRAG,
 	PUBLISH_DRAG_SOURCE,
@@ -8,15 +6,11 @@ import {
 	DROP,
 } from '../actions/dragDrop'
 import { REMOVE_TARGET } from '../actions/registry'
-import {
-	ItemType,
-	IAction,
-	IBeginDragOptions,
-	ISentinelAction,
-} from '../interfaces'
+import { Identifier, Action } from '../interfaces'
+import { without } from '../utils/js_utils'
 
-export interface IState {
-	itemType: ItemType | null
+export interface State {
+	itemType: Identifier | Identifier[] | null
 	item: any
 	sourceId: string | null
 	targetIds: string[]
@@ -25,7 +19,7 @@ export interface IState {
 	isSourcePublic: boolean | null
 }
 
-const initialState: IState = {
+const initialState: State = {
 	itemType: null,
 	item: null,
 	sourceId: null,
@@ -35,10 +29,10 @@ const initialState: IState = {
 	isSourcePublic: null,
 }
 
-export default function dragOperation(
-	state: IState = initialState,
-	action: IAction<{
-		itemType: ItemType
+export function reduce(
+	state: State = initialState,
+	action: Action<{
+		itemType: Identifier | Identifier[]
 		item: any
 		sourceId: string
 		targetId: string
@@ -46,7 +40,7 @@ export default function dragOperation(
 		isSourcePublic: boolean
 		dropResult: any
 	}>,
-) {
+): State {
 	const { payload } = action
 	switch (action.type) {
 		case BEGIN_DRAG:

@@ -1,12 +1,7 @@
 [![npm version](https://img.shields.io/npm/v/react-dnd.svg?style=flat-square)](https://www.npmjs.com/package/react-dnd)
 [![npm downloads](https://img.shields.io/npm/dm/react-dnd.svg?style=flat-square)](https://www.npmjs.com/package/react-dnd)
-[![Build Status](https://travis-ci.org/react-dnd/react-dnd.svg?branch=master)](https://travis-ci.org/react-dnd/react-dnd)
-[![bitHound Overall Score](https://www.bithound.io/github/react-dnd/react-dnd/badges/score.svg)](https://www.bithound.io/github/react-dnd/react-dnd)
-[![bitHound Code](https://www.bithound.io/github/react-dnd/react-dnd/badges/code.svg)](https://www.bithound.io/github/react-dnd/react-dnd)
-[![bitHound Dependencies](https://www.bithound.io/github/react-dnd/react-dnd/badges/dependencies.svg)](https://www.bithound.io/github/react-dnd/react-dnd/master/dependencies/npm)
-[![bitHound Dev Dependencies](https://www.bithound.io/github/react-dnd/react-dnd/badges/devDependencies.svg)](https://www.bithound.io/github/react-dnd/react-dnd/master/dependencies/npm)
-![gzip size](http://img.badgesize.io/https://npmcdn.com/react-dnd/dist/ReactDnD.min.js?compression=gzip)
-![gzip size](http://img.badgesize.io/https://npmcdn.com/react-dnd-html5-backend/dist/ReactDnDHTML5Backend.min.js?compression=gzip&label=HTML5%20backend%20gzip%20size)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Freact-dnd%2Freact-dnd%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/react-dnd/react-dnd/goto?ref=main)
+[![codecov](https://codecov.io/gh/react-dnd/react-dnd/branch/main/graph/badge.svg)](https://codecov.io/gh/react-dnd/react-dnd)
 
 # React _DnD_
 
@@ -23,5 +18,15 @@ https://github.com/react-dnd/react-dnd/releases
 Questions? Find us on the Reactiflux Discord Server (**#need-help**)
 
 https://www.reactiflux.com/
+
+### Technical Details
+
+- ES Modules w/ Embedded CJS for Jest Testing
+- Ships w/ TS Typings
+- Browserlist Target: `>0.25%, not dead`
+
+### Shoutouts 🙏
+
+<img src="/assets/browserstack-logo-600x315.png" height="80" title="BrowserStack Logo" alt="BrowserStack Logo" />
 
 Big thanks to [BrowserStack](https://www.browserstack.com) for letting the maintainers use their service to debug browser issues.

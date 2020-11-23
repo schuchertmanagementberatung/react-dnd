@@ -1,14 +1,13 @@
-import isArray from 'lodash/isArray'
-import { ItemType, TargetType } from '../interfaces'
+import { Identifier } from '../interfaces'
 
-export default function matchesType(
-	targetType: TargetType | null,
-	draggedItemType: ItemType | null,
-) {
+export function matchesType(
+	targetType: Identifier | Identifier[] | null,
+	draggedItemType: Identifier | null,
+): boolean {
 	if (draggedItemType === null) {
 		return targetType === null
 	}
-	return isArray(targetType)
-		? (targetType as ItemType[]).some(t => t === draggedItemType)
+	return Array.isArray(targetType)
+		? (targetType as Identifier[]).some((t) => t === draggedItemType)
 		: targetType === draggedItemType
 }
