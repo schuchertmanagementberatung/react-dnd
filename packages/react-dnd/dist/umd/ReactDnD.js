@@ -1,12 +1,13 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
-	typeof define === 'function' && define.amd ? define(['react'], factory) :
-	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ReactDnD = factory(global.React));
-}(this, (function (_react) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react'), require('react-dom')) :
+	typeof define === 'function' && define.amd ? define(['react', 'react-dom'], factory) :
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ReactDnD = factory(global.React, global.ReactDOM));
+}(this, (function (_react, _reactDom) { 'use strict';
 
 	function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 	var _react__default = /*#__PURE__*/_interopDefaultLegacy(_react);
+	var _reactDom__default = /*#__PURE__*/_interopDefaultLegacy(_reactDom);
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -3628,16 +3629,7 @@
 
 
 
-	function throwIfCompositeComponentElement(element) {
-	  // Custom components can no longer be wrapped directly in React DnD 2.0
-	  // so that we don't need to depend on findDOMNode() from react-dom.
-	  if (typeof element.type === 'string') {
-	    return;
-	  }
 
-	  var displayName = element.type.displayName || element.type.name || 'the component';
-	  throw new Error('Only native element nodes can now be passed to React DnD connectors.' + "You can either wrap ".concat(displayName, " into a <div>, or turn it into a ") + 'drag source or a drop target itself.');
-	}
 
 	function wrapHookToRecognizeElement(hook) {
 	  return function () {
@@ -3646,7 +3638,7 @@
 
 	    // When passed a node, call the hook straight away.
 	    if (!(0, _react__default['default'].isValidElement)(elementOrNode)) {
-	      var node = elementOrNode;
+	      var node = (0, _reactDom__default['default'].findDOMNode)(elementOrNode);
 	      hook(node, options); // return the node so it can be chained (e.g. when within callback refs
 	      // <div ref={node => connectDragSource(connectDropTarget(node))}/>
 
@@ -3656,8 +3648,8 @@
 	    // are being used under the hood.
 
 
-	    var element = elementOrNode;
-	    throwIfCompositeComponentElement(element); // When no options are passed, use the hook directly
+	    var element = elementOrNode; // throwIfCompositeComponentElement(element as any)
+	    // When no options are passed, use the hook directly
 
 	    var ref = options ? function (node) {
 	      return hook(node, options);

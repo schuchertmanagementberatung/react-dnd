@@ -1,14 +1,17 @@
 {
-  "name": "react-dnd",
-  "version": "11.1.3",
+  "name": "@schuchertmanagementberatung/react-dnd",
+  "version": "11.1.5",
   "description": "Drag and Drop for React",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-dnd/react-dnd.git"
+    "url": "git+https://github.com/schuchertmanagementberatung/react-dnd-legacy.git"
   },
   "license": "MIT",
   "scripts": {
@@ -19,7 +22,7 @@
   "dependencies": {
     "@react-dnd/invariant": "^2.0.0",
     "@react-dnd/shallowequal": "^2.0.0",
-    "dnd-core": "workspace:packages/dnd-core",
+    "dnd-core": "^11.1.3",
     "hoist-non-react-statics": "^3.3.2"
   },
   "devDependencies": {

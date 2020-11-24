@@ -7,18 +7,9 @@ exports.wrapConnectorHooks = wrapConnectorHooks;
 
 var _react = require("react");
 
+var _reactDom = require("react-dom");
+
 var _cloneWithRef = require("../utils/cloneWithRef");
-
-function throwIfCompositeComponentElement(element) {
-  // Custom components can no longer be wrapped directly in React DnD 2.0
-  // so that we don't need to depend on findDOMNode() from react-dom.
-  if (typeof element.type === 'string') {
-    return;
-  }
-
-  var displayName = element.type.displayName || element.type.name || 'the component';
-  throw new Error('Only native element nodes can now be passed to React DnD connectors.' + "You can either wrap ".concat(displayName, " into a <div>, or turn it into a ") + 'drag source or a drop target itself.');
-}
 
 function wrapHookToRecognizeElement(hook) {
   return function () {
@@ -27,7 +18,7 @@ function wrapHookToRecognizeElement(hook) {
 
     // When passed a node, call the hook straight away.
     if (!(0, _react.isValidElement)(elementOrNode)) {
-      var node = elementOrNode;
+      var node = (0, _reactDom.findDOMNode)(elementOrNode);
       hook(node, options); // return the node so it can be chained (e.g. when within callback refs
       // <div ref={node => connectDragSource(connectDropTarget(node))}/>
 
@@ -37,8 +28,8 @@ function wrapHookToRecognizeElement(hook) {
     // are being used under the hood.
 
 
-    var element = elementOrNode;
-    throwIfCompositeComponentElement(element); // When no options are passed, use the hook directly
+    var element = elementOrNode; // throwIfCompositeComponentElement(element as any)
+    // When no options are passed, use the hook directly
 
     var ref = options ? function (node) {
       return hook(node, options);
